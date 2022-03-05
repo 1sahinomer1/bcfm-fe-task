@@ -2,7 +2,7 @@ import axios from 'axios';
 import { GetCurrency } from 'types';
 
 const BASEURL = 'http://data.fixer.io/api/';
-const API_KEY = '3002996d3dab4d96861ca991842b6023';
+const API_KEY = '9e4d78370a68ae2489bfc8dd463b5060';
 
 export const getData = async () => {
   const res = await axios.get<GetCurrency>(
