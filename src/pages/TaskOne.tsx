@@ -114,7 +114,7 @@ const TaskOne = () => {
         <p className="currentTl">{currentMoney}₺</p>
       ) : (
         <p className="currentTl">
-          {data && (data?.rates.TRY / data?.rates.USD).toFixed(2)}
+          {data && (data?.rates.TRY / data?.rates.USD).toFixed(2)}₺
         </p>
       )}
     </div>
