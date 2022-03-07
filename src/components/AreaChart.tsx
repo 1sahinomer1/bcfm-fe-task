@@ -19,40 +19,48 @@ const AreaChart = ({ country }: AreaProps) => {
   console.log(dailyData);
   return (
     <div>
-      <Chart
-        width="500"
-        options={{
-          chart: {
-            type: 'area',
-          },
+      {' '}
+      {dailyData ? (
+        <Chart
+          width="500"
+          options={{
+            chart: {
+              type: 'area',
+            },
 
-          dataLabels: {
-            enabled: false,
-          },
-          stroke: {
-            curve: 'smooth',
-          },
-          yaxis: {
-            title: {
-              text: 'Covid 19 ',
+            dataLabels: {
+              enabled: false,
             },
-          },
-          xaxis: {
-            type: 'datetime',
-            categories: dailyData?.map((item) => item.Date),
-          },
-          tooltip: {
-            x: {
-              format: 'dd/MM/yy',
+            stroke: {
+              curve: 'smooth',
             },
-          },
-        }}
-        series={[
-          { name: 'Vaka', data: dailyData?.map((item) => item.Confirmed) },
-          { name: 'İyileşen', data: dailyData?.map((item) => item.Recovered) },
-          { name: 'Ölüm', data: dailyData?.map((item) => item.Deaths) },
-        ]}
-      />
+            yaxis: {
+              title: {
+                text: 'Covid 19 ',
+              },
+            },
+            xaxis: {
+              type: 'datetime',
+              categories: dailyData?.map((item) => item.Date),
+            },
+            tooltip: {
+              x: {
+                format: 'dd/MM/yy',
+              },
+            },
+          }}
+          series={[
+            { name: 'Vaka', data: dailyData?.map((item) => item.Confirmed) },
+            {
+              name: 'İyileşen',
+              data: dailyData?.map((item) => item.Recovered),
+            },
+            { name: 'Ölüm', data: dailyData?.map((item) => item.Deaths) },
+          ]}
+        />
+      ) : (
+        <p>loading...</p>
+      )}
     </div>
   );
 };

@@ -24,19 +24,26 @@ const TaskTwo = () => {
   return (
     <div className="taskOnePage">
       <FormControl sx={{ m: 1, minWidth: 250 }}>
-        <InputLabel id="demo-simple-select-label">Country</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={selectedCountry}
-          label="Country"
-          onChange={handleChange}
-        >
-          {countries &&
-            countries.map((country) => (
-              <MenuItem value={country.Slug}>{country.Country}</MenuItem>
-            ))}
-        </Select>
+        {countries ? (
+          <>
+            <InputLabel id="demo-simple-select-label">Country</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={selectedCountry}
+              label="Country"
+              onChange={handleChange}
+            >
+              {countries &&
+                countries.map((country) => (
+                  <MenuItem value={country.Slug}>{country.Country}</MenuItem>
+                ))}
+            </Select>
+          </>
+        ) : (
+          <p>loading</p>
+        )}
+
         <Chart country={selectedCountry} />
       </FormControl>
     </div>
