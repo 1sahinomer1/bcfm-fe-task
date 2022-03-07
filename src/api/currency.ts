@@ -1,20 +1,28 @@
 import axios from 'axios';
-import { GetCurrency } from 'types';
+import { CovidCountry, GetCurrency } from 'types';
 
 const BASEURL = 'http://data.fixer.io/api/';
 const API_KEY = '9e4d78370a68ae2489bfc8dd463b5060';
+const COVIDBASE = 'https://api.covid19api.com';
 
 export const getData = async () => {
-  const res = await axios.get<GetCurrency>(
+  const { data } = await axios.get<GetCurrency>(
     `${BASEURL}latest?access_key=${API_KEY}&format=1`
   );
-  const data = res.data;
   return data;
 };
 export const getDateData = async (date: string | undefined) => {
-  const res = await axios.get<GetCurrency>(
+  const { data } = await axios.get<GetCurrency>(
     `${BASEURL}${date}?access_key=${API_KEY}`
   );
-  const data = res.data;
+  return data;
+};
+
+export const getCountries = async () => {
+  const { data } = await axios.get<CovidCountry[]>(`${COVIDBASE}/countries`);
+  return data;
+};
+export const getDailyCovid = async (country: string) => {
+  const { data } = await axios.get(`${COVIDBASE}/dayone/country/${country}`);
   return data;
 };

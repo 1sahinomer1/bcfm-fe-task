@@ -1,5 +1,6 @@
-import { Github, Instagram, Linkedin, Mail, Medium, Twitter } from 'icons';
 import styled from 'styled-components';
+
+import { Github, Instagram, Linkedin, Mail, Medium, Twitter } from 'icons';
 
 const TaskThree = () => {
   return (
