@@ -1,10 +1,11 @@
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import { useEffect, useState } from 'react';
 
-import Chart from 'components/AreaChart';
+import AreaChart from 'components/AreaChart';
 
 import { getCountries } from 'api/currency';
 import { CovidCountry } from 'types';
+import BasicTable from 'components/BasicTable';
 
 const TaskTwo = () => {
   const [countries, setCountries] = useState<CovidCountry[]>();
@@ -15,6 +16,7 @@ const TaskTwo = () => {
       const datas = await getCountries();
       setCountries(datas);
     };
+
     getDataCurrency();
   }, []);
 
@@ -36,15 +38,17 @@ const TaskTwo = () => {
             >
               {countries &&
                 countries.map((country) => (
-                  <MenuItem value={country.Slug}>{country.Country}</MenuItem>
+                  <MenuItem value={country.Slug} key={country.ISO2}>
+                    {country.Country}
+                  </MenuItem>
                 ))}
             </Select>
           </>
         ) : (
           <p>loading</p>
         )}
-
-        <Chart country={selectedCountry} />
+        <BasicTable country={selectedCountry} />
+        <AreaChart country={selectedCountry} />
       </FormControl>
     </div>
   );

@@ -2,7 +2,7 @@ import axios from 'axios';
 import { CovidCountry, GetCurrency } from 'types';
 
 const BASEURL = 'http://data.fixer.io/api/';
-const API_KEY = '9e4d78370a68ae2489bfc8dd463b5060';
+const API_KEY = 'b58f1052201d107b037c844af25ab052';
 const COVIDBASE = 'https://api.covid19api.com';
 
 export const getData = async () => {
