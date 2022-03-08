@@ -5,4 +5,4 @@ export const options = [
   'Canada Doları',
   'Japon Yeni',
 ];
-export const lineOptions = ['İlk 10 Gün', 'Son 10 Gün'];
+export const lineOptions = ['Son 1 hafta', 'Son 2 hafta', 'Son 1 ay'];

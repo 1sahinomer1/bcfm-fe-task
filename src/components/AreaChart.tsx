@@ -1,16 +1,36 @@
 import { getDailyCovid } from 'api/currency';
-import { lineOptions } from 'constants/Dropdown';
+import { lineOptions } from '../constants/Dropdown';
 import { useEffect, useState, useCallback } from 'react';
-import ReactApexChart from 'react-apexcharts';
+import { Bar } from 'react-chartjs-2';
 import { DailyDateType } from 'types';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
 import { List, ListItem, ListItemText, Menu, MenuItem } from '@mui/material';
+import dayjs from 'dayjs';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
 type AreaProps = {
   country: string;
 };
 
 const AreaChart = ({ country }: AreaProps) => {
   const [dailyData, setDailyData] = useState<DailyDateType[]>();
-  const [x, setX] = useState<DailyDateType[]>();
+  const [slice, setSlice] = useState<number>(7);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const open = Boolean(anchorEl);
@@ -21,17 +41,19 @@ const AreaChart = ({ country }: AreaProps) => {
 
   const getDailyData = useCallback(async () => {
     const datas = await getDailyCovid(country);
-    setDailyData(datas);
+
+    setDailyData(datas.reverse());
   }, [country]);
 
   useEffect(() => {
-    // getDailyData();
+    getDailyData();
   }, [country, getDailyData]);
 
-  const handleMenuItemClick = (
-    event: React.MouseEvent<HTMLElement>,
-    index: number
-  ) => {
+  const handleMenuItemClick = (index: number) => {
+    if (index === 0) setSlice(7);
+    else if (index === 1) setSlice(14);
+    else setSlice(30);
+
     setSelectedIndex(index);
     setAnchorEl(null);
   };
@@ -40,33 +62,44 @@ const AreaChart = ({ country }: AreaProps) => {
     setAnchorEl(null);
   };
 
-  const series = [
-    {
-      name: 'Vaka',
-      data: dailyData?.map((item) => item.Confirmed),
-    },
-    {
-      name: 'İyileşen',
-      data: dailyData?.map((item) => item.Recovered),
-    },
-    {
-      name: 'Ölüm',
-      data: dailyData?.map((item) => item.Deaths),
-    },
-  ];
   const options = {
-    chart: {
-      id: 'simple-bar',
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top' as const,
+      },
+      title: {
+        display: true,
+        text: 'Chart.js Bar Chart',
+      },
     },
-    plotOptions: {
-      bar: { columnWidth: '100%', barHeight: '100%' },
-    },
-    xaxis: {
-      categories: dailyData?.slice(0, 10).map((data) => {
-        let currentDate = new Date(data.Date);
-        return currentDate.toISOString().slice(0, 10);
-      }),
-    },
+  };
+
+  const data = {
+    labels:
+      dailyData &&
+      dailyData
+        ?.map((data) => dayjs(data.Date).format('DD/MM/YYYY'))
+        .slice(0, slice),
+    datasets: [
+      {
+        label: 'Vaka',
+        data:
+          dailyData && dailyData.map((data) => data.Confirmed).slice(0, slice),
+        backgroundColor: 'rgba(18, 126, 250, 0.5)',
+      },
+      {
+        label: 'Ölü',
+        data: dailyData && dailyData.map((data) => data.Deaths).slice(0, slice),
+        backgroundColor: 'rgb(133, 8, 35)',
+      },
+      {
+        label: 'İyileşen',
+        data:
+          dailyData && dailyData.map((data) => data.Recovered).slice(0, slice),
+        backgroundColor: 'rgba(15, 223, 15, 0.5)',
+      },
+    ],
   };
 
   return (
@@ -101,22 +134,13 @@ const AreaChart = ({ country }: AreaProps) => {
           <MenuItem
             key={option}
             selected={index === selectedIndex}
-            onClick={(event) => handleMenuItemClick(event, index)}
+            onClick={() => handleMenuItemClick(index)}
           >
             {option}
           </MenuItem>
         ))}
       </Menu>
-      {dailyData ? (
-        <ReactApexChart
-          options={options}
-          series={series}
-          type="bar"
-          height={350}
-        />
-      ) : (
-        <p>loading...</p>
-      )}
+      <Bar options={options} data={data} />
     </div>
   );
 };

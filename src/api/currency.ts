@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { CovidCountry, GetCurrency } from 'types';
+import { CovidCountry, DailyDateType, GetCurrency } from 'types';
 
 const BASEURL = 'http://data.fixer.io/api/';
 const API_KEY = 'b58f1052201d107b037c844af25ab052';
@@ -23,6 +23,8 @@ export const getCountries = async () => {
   return data;
 };
 export const getDailyCovid = async (country: string) => {
-  const { data } = await axios.get(`${COVIDBASE}/dayone/country/${country}`);
+  const { data } = await axios.get<DailyDateType[]>(
+    `${COVIDBASE}/dayone/country/${country}`
+  );
   return data;
 };

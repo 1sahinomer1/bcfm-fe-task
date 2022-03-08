@@ -27,3 +27,6 @@ a {
   text-decoration: none;
   color: black;
 }
+.MuiFormControl-root {
+  width: 65%;
+}
