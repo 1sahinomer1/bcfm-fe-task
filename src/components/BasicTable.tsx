@@ -12,6 +12,7 @@ import {
 import { getDailyCovid } from 'api/currency';
 import { useEffect, useState } from 'react';
 import { DailyDateType } from 'types';
+import Loading from './Loading';
 import TablePaginationActions from './TablePaginationActions';
 
 type tableProps = {
@@ -59,7 +60,7 @@ const BasicTable = ({ country }: tableProps) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {dailyData &&
+          {dailyData ? (
             (rowsPerPage > 0
               ? dailyData?.slice(
                   page * rowsPerPage,
@@ -81,7 +82,10 @@ const BasicTable = ({ country }: tableProps) => {
                   <TableCell align="right">{data.Deaths}</TableCell>
                 </TableRow>
               );
-            })}
+            })
+          ) : (
+            <Loading />
+          )}
           {emptyRows > 0 && (
             <TableRow style={{ height: 53 * emptyRows }}>
               <TableCell colSpan={6} />

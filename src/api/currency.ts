@@ -1,22 +1,8 @@
 import axios from 'axios';
-import { CovidCountry, DailyDateType, GetCurrency } from 'types';
+import { chartCoin, CovidCountry, DailyDateType } from 'types';
 
-const BASEURL = 'http://data.fixer.io/api/';
-const API_KEY = 'f88df72a461c954ae762de9f9822b5fd';
 const COVIDBASE = 'https://api.covid19api.com';
-
-export const getData = async () => {
-  const { data } = await axios.get<GetCurrency>(
-    `${BASEURL}latest?access_key=${API_KEY}&format=1`
-  );
-  return data;
-};
-export const getDateData = async (date: string | undefined) => {
-  const { data } = await axios.get<GetCurrency>(
-    `${BASEURL}${date}?access_key=${API_KEY}`
-  );
-  return data;
-};
+const COINBASE = 'https://api.coingecko.com/api/v3/coins';
 
 export const getCountries = async () => {
   const { data } = await axios.get<CovidCountry[]>(`${COVIDBASE}/countries`);
@@ -25,6 +11,17 @@ export const getCountries = async () => {
 export const getDailyCovid = async (country: string) => {
   const { data } = await axios.get<DailyDateType[]>(
     `${COVIDBASE}/dayone/country/${country}`
+  );
+  return data;
+};
+
+export const getHistoricalChart = async (
+  id: string,
+  days = 365,
+  currency: string
+) => {
+  const { data } = await axios.get<chartCoin>(
+    `${COINBASE}/${id}/market_chart?vs_currency=${currency}&days=${days}`
   );
   return data;
 };

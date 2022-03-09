@@ -11,13 +11,15 @@
   width: 100%;
   justify-content: center;
   align-items: center;
-  margin: 20px 0;
+  margin: 50px 0;
 }
 .taskOnePage {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: 80%;
+  margin: 0 auto;
 }
 .taskTwoPage {
   display: flex;
@@ -35,4 +37,52 @@ a {
 }
 .taskTwoPage .MuiFormControl-root {
   width: 65%;
+}
+.active {
+  text-decoration: underline;
+}
+.unActive {
+  color: gray;
+}
+.navlink {
+  margin: 0 20px;
+  font-size: 18px;
+}
+.formGroup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.circles {
+  height: 90vmin;
+  position: relative;
+  width: 90vmin;
+}
+.circles > div {
+  animation: growAndFade 3s infinite ease-out;
+  background-color: dodgerblue;
+  border-radius: 50%;
+  height: 100%;
+  opacity: 0;
+  position: absolute;
+  width: 100%;
+}
+.circles .circle1 {
+  animation-delay: 1s;
+}
+.circles .circle2 {
+  animation-delay: 2s;
+}
+.circles .circle3 {
+  animation-delay: 3s;
+}
+@keyframes growAndFade {
+  0% {
+    opacity: 0.25;
+    transform: scale(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
 }
