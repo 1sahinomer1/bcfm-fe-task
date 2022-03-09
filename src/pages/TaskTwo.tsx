@@ -24,7 +24,7 @@ const TaskTwo = () => {
     setSelectedCountry(event.target.value);
   };
   return (
-    <div className="taskOnePage">
+    <div className="taskTwoPage">
       <FormControl sx={{ m: 1, minWidth: 250 }}>
         {countries ? (
           <>

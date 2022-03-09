@@ -1,5 +1,5 @@
 import { getData, getDateData } from 'api/currency';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { GetCurrency } from 'types';
 
 import { DatePicker } from '@mui/lab';
@@ -11,11 +11,38 @@ import {
   MenuItem,
   TextField,
 } from '@mui/material';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import { Line } from 'react-chartjs-2';
 import { options } from 'constants/Dropdown';
+
+import dayjs from 'dayjs';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const TaskOne = () => {
   const [data, setData] = useState<GetCurrency>();
-  const [currentMoney, setCurrentMoney] = useState<any>();
+  const [yesterdayData, setYesterdayData] = useState<GetCurrency>();
+  const [currentMoney, setCurrentMoney] = useState<string | undefined>();
+  const [yesterdayCurrentMoney, setYesterdayCurrentMoney] = useState<
+    string | undefined
+  >();
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -30,39 +57,103 @@ const TaskOne = () => {
     setAnchorEl(null);
     if (index === 0) {
       data && setCurrentMoney((data?.rates.TRY / data?.rates.USD).toFixed(2));
+      yesterdayData &&
+        setYesterdayCurrentMoney(
+          (yesterdayData?.rates.TRY / yesterdayData?.rates.USD).toFixed(2)
+        );
     } else if (index === 1) {
       data && setCurrentMoney((data?.rates.TRY / data?.rates.GBP).toFixed(2));
+      yesterdayData &&
+        setYesterdayCurrentMoney(
+          (yesterdayData?.rates.TRY / yesterdayData?.rates.GBP).toFixed(2)
+        );
     } else if (index === 2) {
       setCurrentMoney(data?.rates.TRY?.toFixed(2));
+      yesterdayData &&
+        setYesterdayCurrentMoney((yesterdayData?.rates.TRY).toFixed(2));
     } else if (index === 3) {
       data && setCurrentMoney((data?.rates.TRY / data?.rates.CAD).toFixed(2));
+      yesterdayData &&
+        setYesterdayCurrentMoney(
+          (yesterdayData?.rates.TRY / yesterdayData?.rates.CAD).toFixed(2)
+        );
     } else if (index === 4) {
       data && setCurrentMoney((data?.rates.TRY / data?.rates.JPY).toFixed(2));
+      yesterdayData &&
+        setYesterdayCurrentMoney(
+          (yesterdayData?.rates.TRY / yesterdayData?.rates.JPY).toFixed(2)
+        );
     }
   };
 
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const getDataCurrency = useCallback(async () => {
+    const datas = await getData();
+    setData(datas);
+    const yesterdayDatas = await getDateData(
+      dayjs(selectedDate).subtract(1, 'd').format('YYYY-MM-DD')
+    );
+    setYesterdayData(yesterdayDatas);
+  }, []);
+
+  const getDateCurrency = useCallback(async () => {
+    const datas = await getDateData(dayjs(selectedDate).format('YYYY-MM-DD'));
+    setData(datas);
+    const yesterDayDatas = await getDateData(
+      dayjs(selectedDate).subtract(1, 'd').format('YYYY-MM-DD')
+    );
+    setYesterdayData(yesterDayDatas);
+  }, [selectedDate]);
 
   useEffect(() => {
-    const getDataCurrency = async () => {
-      const datas = await getData();
-      setData(datas);
-    };
     getDataCurrency();
   }, []);
 
   useEffect(() => {
-    let formatDate = selectedDate?.toISOString().slice(0, 10);
-    const getDateCurrency = async () => {
-      const datas = await getDateData(formatDate);
-      setData(datas);
-    };
     selectedDate && getDateCurrency();
-    data && setCurrentMoney((data?.rates.TRY / data?.rates.USD).toFixed(2));
-  }, [selectedDate]);
+  }, [getDateCurrency, selectedDate]);
 
+  const LineOption = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top' as const,
+      },
+      title: {
+        display: true,
+        text: 'Chart.js Line Chart',
+      },
+    },
+  };
+  const labels = [
+    dayjs(selectedDate).subtract(1, 'd').format('YYYY-MM-DD'),
+    dayjs(selectedDate).format('YYYY-MM-DD'),
+  ];
+  const LineData = {
+    labels,
+    datasets: [
+      {
+        label: 'Dolar  1',
+        borderColor: 'rgb(255, 99, 132)',
+        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+        data:
+          data &&
+          labels.map(() => (data?.rates.TRY / data?.rates.USD).toFixed(2)),
+      },
+      {
+        label: 'Dolar 2',
+        borderColor: 'rgb(53, 162, 235)',
+        backgroundColor: 'rgba(53, 162, 235, 0.5)',
+        data:
+          yesterdayData &&
+          labels.map(() =>
+            (yesterdayData?.rates.TRY / yesterdayData?.rates.USD).toFixed(2)
+          ),
+      },
+    ],
+  };
   return (
     <div className="taskOnePage">
       <DatePicker
@@ -110,14 +201,26 @@ const TaskOne = () => {
           </MenuItem>
         ))}
       </Menu>
-
-      {currentMoney ? (
-        <p className="currentTl">{currentMoney}₺</p>
+      {data && !currentMoney ? (
+        <p className="currentTl">
+          data money :{(data?.rates.TRY / data?.rates.USD).toFixed(2)}₺ date:
+          {data.date}
+        </p>
+      ) : (
+        <p className="currentTl"> current money :{currentMoney}₺</p>
+      )}
+      {yesterdayData && !yesterdayCurrentMoney ? (
+        <p className="currentTl">
+          yesterday data money :{' '}
+          {(yesterdayData?.rates.TRY / yesterdayData?.rates.USD).toFixed(2)}₺
+          date:{yesterdayData.date}
+        </p>
       ) : (
         <p className="currentTl">
-          {data && (data?.rates.TRY / data?.rates.USD).toFixed(2)}₺
+          yesterday current money :{yesterdayCurrentMoney}₺
         </p>
       )}
+      {/* <Line options={LineOption} data={LineData} />; */}
     </div>
   );
 };

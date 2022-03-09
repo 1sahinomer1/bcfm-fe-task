@@ -19,6 +19,12 @@
   align-items: center;
   justify-content: center;
 }
+.taskTwoPage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
 .currentTl {
   font-size: 40px;
   margin: 20px 0;
@@ -27,6 +33,6 @@ a {
   text-decoration: none;
   color: black;
 }
-.MuiFormControl-root {
+.taskTwoPage .MuiFormControl-root {
   width: 65%;
 }
