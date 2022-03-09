@@ -54,9 +54,14 @@ const TaskOne = () => {
   let lineData = {
     labels:
       historicalData &&
-      historicalData.prices.map((coin: number[]) =>
-        dayjs(coin[0]).format('DD/MM/YYYY')
-      ),
+      historicalData.prices.map((coin: number[]) => {
+        let date = new Date(coin[0]);
+        let time =
+          date.getHours() > 12
+            ? `${date.getHours() - 12}:${date.getMinutes()} PM`
+            : `${date.getHours()}:${date.getMinutes()} AM`;
+        return days === 1 ? time : date.toLocaleDateString();
+      }),
     datasets: [
       {
         data:
